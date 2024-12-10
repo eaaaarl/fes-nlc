@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  username String @unique
+  password String
+  Role     Role
+
+  sessions Session[]
+  Student  Student[]
+  Faculty  Faculty[]
+}
+
+enum Role {
+  ADMINISTRATOR
+  STUDENT
+  FACULTY
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Faculty {
+  id                  Int               @id @default(autoincrement())
+  fullName            String
+  department          String
+  plainTextPasswordId String
+  plaintTextPassword  plainTextPassword @relation(fields: [plainTextPasswordId], references: [id], onDelete: Cascade)
+  subjects            Subject[]         @relation("FacultySubjects")
+  userId              String
+  user                User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Evaluation          Evaluation[]
+}
+
+model Student {
+  id                  Int               @id @default(autoincrement())
+  fullName            String
+  department          String
+  plainTextPasswordId String
+  plaintTextPassword  plainTextPassword @relation(fields: [plainTextPasswordId], references: [id], onDelete: Cascade)
+
+  subjects Subject[] @relation("StudentSubjects")
+
+  userId            String?
+  user              User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  SubjectEvaluation SubjectEvaluation[]
+}
+
+model plainTextPassword {
+  id                String    @id @default(uuid())
+  plainTextPassword String?
+  Faculty           Faculty[]
+  Student           Student[]
+}
+
+model SubjectEvaluation {
+  id          Int      @id @default(autoincrement())
+  subjectName String
+  isEvaluated Boolean  @default(false)
+  evaluatedAt DateTime @default(now())
+
+  studentId Int
+  student   Student  @relation(fields: [studentId], references: [id])
+  Subject   Subject? @relation(fields: [subjectId], references: [id])
+  subjectId Int?
+
+  @@unique([subjectName, studentId], name: "uniqueSubjectNameStudentId")
+}
+
+model Subject {
+  id          Int       @id @default(autoincrement())
+  subjectName String
+  faculty     Faculty[] @relation("FacultySubjects")
+  students    Student[] @relation("StudentSubjects")
+
+  SubjectEvaluation SubjectEvaluation[]
+}
+
+model Category {
+  id           Int        @id @default(autoincrement())
+  categoryName String     @unique
+  questions    Question[]
+}
+
+model Question {
+  id           Int        @id @default(autoincrement())
+  questionName String
+  categoryId   Int
+  category     Category   @relation(fields: [categoryId], references: [id])
+  Response     Response[]
+}
+
+model RatingScale {
+  id          Int     @id @default(autoincrement())
+  rating      Int
+  description String? @unique
+}
+
+model Evaluation {
+  id            Int     @id @default(autoincrement())
+  facultyId     Int
+  faculty       Faculty @relation(fields: [facultyId], references: [id])
+  subject       String
+  classSchedule String
+  responseId    String
+  comments      String?
+
+  createdAt DateTime   @default(now())
+  Response  Response[]
+}
+
+model Response {
+  id           Int        @id @default(autoincrement())
+  evaluationId Int
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  questionId   Int
+  question     Question   @relation(fields: [questionId], references: [id])
+  rating       Int
+
+  createdAt DateTime @default(now())
+}
