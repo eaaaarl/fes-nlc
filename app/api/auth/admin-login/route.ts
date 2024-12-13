@@ -13,8 +13,6 @@ export async function POST(req: NextRequest) {
     const paylod = await req.json();
 
     const { username, password } = loginAdminSchema.parse(paylod);
-    console.log(username);
-    console.log(password);
     const existingUser = await prisma.user.findFirst({
       where: {
         username,
@@ -29,12 +27,10 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-    console.log(existingUser.password);
     const validPassword = await verifyPasswordHash(
       existingUser.password,
       password
     );
-    console.log(validPassword);
     if (!validPassword) {
       return NextResponse.json(
         {

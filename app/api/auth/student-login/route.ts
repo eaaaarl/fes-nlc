@@ -1,21 +1,21 @@
 import prisma from "@/lib/db";
 import { loginStudentSchema } from "@/lib/validation";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 import {
   createSession,
   generateSessionToken,
   setSessionTokenCookie,
 } from "@/lib/session";
+import { verifyPasswordHash } from "@/lib/password";
 
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-    const { username, password } = loginStudentSchema.parse(payload);
+    const { studentId, password } = loginStudentSchema.parse(payload);
 
     const existingUser = await prisma.user.findUnique({
-      where: { username },
+      where: { username: studentId },
     });
 
     if (!existingUser) {
@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const validPassword = await bcrypt.compare(password, existingUser.password);
+    const validPassword = await verifyPasswordHash(
+      existingUser.password,
+      password
+    );
 
     if (!validPassword) {
       return NextResponse.json(

@@ -19,7 +19,7 @@ export function useCreate() {
       console.error(error);
       toast({
         variant: "destructive",
-        description: "Failed to create faculty.",
+        description: "Failed to create student.",
       });
     },
   });

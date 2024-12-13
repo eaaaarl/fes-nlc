@@ -11,11 +11,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { evaluationSchema, evaluationValues } from '@/lib/validation'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, Loader2 } from 'lucide-react'
+import { CheckCircle2, CheckCircleIcon, Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { useSubmitEvaluation } from '../mutation'
+import { EvaluationFormSkeleton } from './EvaluationFormSkeleton'
 
 type Question = {
     id: number;
@@ -149,10 +150,27 @@ export default function FormEvaluation() {
     }
 
     if (isLoading) {
-        return <div className='p-4'>
-            <Loader2 className='h-8 w-8 animate-spin' />
-        </div>
+        return <EvaluationFormSkeleton />
     }
+
+    if (selectedSubjectStudent?.subjects?.length === 0) {
+        return (<Card className="max-w-md mx-auto mt-8 text-center shadow-md border">
+            <CardHeader>
+                <div className="flex justify-center">
+                    <CheckCircleIcon className="h-12 w-12 text-green-500" />
+                </div>
+                <CardTitle className="text-xl font-semibold mt-4">
+                    You are Done Evaluating!
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-gray-600">
+                    Congratulations on completing the evaluations. Take a break and get ready for the next semester!
+                </p>
+            </CardContent>
+        </Card>)
+    }
+
     return (
         <div className='space-y-6 gap-4 p-4' key={formKey}>
             <Form {...form}>

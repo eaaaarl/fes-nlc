@@ -1,10 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
@@ -12,15 +9,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
-import { Loader2, Lock, ShieldCheck, KeyRound, User, Building } from "lucide-react"
+
+import { Lock, ShieldCheck, } from "lucide-react"
 import AdminLoginForm from "./_components/adminLogin-form"
 
 export default function page() {
     return (
-        <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-blue-900 to-indigo-900">
+        <div className="flex h-screen w-full items-center justify-center bg-gray-200">
             <Card className="flex w-full max-w-5xl shadow-2xl border-2 border-blue-700 overflow-hidden">
                 <div className="relative hidden w-1/2 md:block">
                     <Image

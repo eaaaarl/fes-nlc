@@ -1,12 +1,8 @@
 "use client"
 
 import {
-    BadgeCheck,
-    Bell,
-    ChevronsUpDown,
-    CreditCard,
+    BadgeCheck, ChevronsUpDown,
     LogOut,
-    Sparkles,
 } from "lucide-react"
 
 import {
@@ -31,6 +27,8 @@ import {
 } from "@/components/ui/sidebar"
 import { useLogoutAdmin } from "./mutation"
 import { useRouter } from "next/navigation"
+import ChangePassword from "./change-password"
+import { useState } from "react"
 
 export function NavUser({
     user,
@@ -44,35 +42,21 @@ export function NavUser({
     const { isMobile } = useSidebar()
     const router = useRouter()
     const { mutate } = useLogoutAdmin()
+    const [openChangePassword, setOpenChangePassword] = useState<boolean>(false)
 
+    const handleOpenChangePassword = () => {
+        setOpenChangePassword(true)
+    }
     return (
-        <SidebarMenu>
-            <SidebarMenuItem>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton
-                            size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                        >
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src={user.avatar} alt={user.username} />
-                                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                            </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{user.username}</span>
-                                <span className="truncate text-xs">{user.Role}</span>
-                            </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
-                        </SidebarMenuButton>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                        side={isMobile ? "bottom" : "right"}
-                        align="end"
-                        sideOffset={4}
-                    >
-                        <DropdownMenuLabel className="p-0 font-normal">
-                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+        <>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuButton
+                                size="lg"
+                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            >
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage src={user.avatar} alt={user.username} />
                                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
@@ -81,27 +65,55 @@ export function NavUser({
                                     <span className="truncate font-semibold">{user.username}</span>
                                     <span className="truncate text-xs">{user.Role}</span>
                                 </div>
-                            </div>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Change Password
+                                <ChevronsUpDown className="ml-auto size-4" />
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                            side={isMobile ? "bottom" : "right"}
+                            align="end"
+                            sideOffset={4}
+                        >
+                            <DropdownMenuLabel className="p-0 font-normal">
+                                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                    <Avatar className="h-8 w-8 rounded-lg">
+                                        <AvatarImage src={user.avatar} alt={user.username} />
+                                        <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                    </Avatar>
+                                    <div className="grid flex-1 text-left text-sm leading-tight">
+                                        <span className="truncate font-semibold">{user.username}</span>
+                                        <span className="truncate text-xs">{user.Role}</span>
+                                    </div>
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup
+                                onClick={() => handleOpenChangePassword()}
+                            >
+                                <DropdownMenuItem
+                                >
+                                    <BadgeCheck />
+                                    Change Password
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => mutate(undefined, {
+                                onSuccess: () => {
+                                    router.push('/admin')
+                                }
+                            })}>
+                                <LogOut />
+                                Log out
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => mutate(undefined, {
-                            onSuccess: () => {
-                                router.push('/admin')
-                            }
-                        })}>
-                            <LogOut />
-                            Log out
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </SidebarMenuItem>
-        </SidebarMenu>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarMenuItem>
+            </SidebarMenu>
+
+            <ChangePassword
+                onOpen={openChangePassword}
+                onCancel={() => setOpenChangePassword(false)}
+            />
+        </>
     )
 }

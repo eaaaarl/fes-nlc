@@ -13,7 +13,7 @@ interface CategoryScore {
   weightedAverage: string;
   weight: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(req: NextRequest) {
   try {
     const faculties = await prisma.faculty.findMany({
@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
             },
           },
         },
+        subjects: true,
       },
     });
 
@@ -110,6 +111,7 @@ export async function GET(req: NextRequest) {
         facultyId: faculty.id,
         facultyName: faculty.fullName,
         facultyDepartment: faculty.department,
+        facultySubject: faculty.subjects,
         totalEvaluators,
         breakdown: categoryScores,
         totalScore: totalScore.toFixed(2),

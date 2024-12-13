@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const result = await prisma.$transaction(async (prisma) => {
       const evaluation = await prisma.evaluation.create({
         data: {
-          facultyId: parseInt(facultyId),
+          facultyId,
           subject,
           classSchedule,
           responseId: "0",

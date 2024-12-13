@@ -1,38 +1,32 @@
 import prisma from "@/lib/db";
+import { hashPassword } from "@/lib/password";
 import { studentSchema } from "@/lib/validation";
-import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-    const { fullName, department, subjectIds } = studentSchema.parse(payload);
+    const { fullName, department, subjectIds, studentId } =
+      studentSchema.parse(payload);
 
-    const plainTextPassword = randomBytes(8).toString("hex");
-    const hashPassword = await bcrypt.hash(plainTextPassword, 10);
+    const username = fullName.toLowerCase().replace(/\s+/g, "");
+
+    const hashPass = await hashPassword(username);
 
     const result = await prisma.$transaction(async (tx) => {
-      const username = fullName.toLowerCase().replace(/\s+/g, "");
       const user = await tx.user.create({
         data: {
-          username,
-          password: hashPassword,
+          username: studentId,
+          password: hashPass,
           Role: "STUDENT",
-        },
-      });
-
-      const plainTextPasswordId = await tx.plainTextPassword.create({
-        data: {
-          plainTextPassword,
         },
       });
 
       const student = await tx.student.create({
         data: {
+          studentId,
           fullName,
           userId: user.id,
-          plainTextPasswordId: plainTextPasswordId.id,
           department,
           subjects: {
             connect: subjectIds.map((id: string) => ({ id: parseInt(id, 10) })),
@@ -40,14 +34,13 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      return { student, user, plainTextPasswordId };
+      return { student, user };
     });
 
     return NextResponse.json({
       success: true,
       faculty: result.student,
       user: result.user,
-      plainTextPassword: result.plainTextPasswordId,
     });
   } catch (error) {
     console.error(error);

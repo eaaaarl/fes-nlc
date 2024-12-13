@@ -2,17 +2,12 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileDown, UserPlus } from 'lucide-react'
+import { UserPlus } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import FacultyTableData from './_components/FacultyTableData'
 
-
-
 export default function FacultyPage() {
-
-
-
     return (
         <>
             <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">

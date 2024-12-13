@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { Loader } from 'lucide-react';
 
 export default function PrintPage() {
     const router = useRouter();
@@ -9,7 +10,7 @@ export default function PrintPage() {
     const componentRef = useRef(null);
     const facultyId = params?.facultyId as string;
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['faculty-evaluation', facultyId],
         queryFn: async () => {
             const response = await fetch(`/api/admin/evaluation-result/${facultyId}/result`);
@@ -47,8 +48,6 @@ export default function PrintPage() {
         };
     }, [router]);
 
-    if (isLoading) return <div>Loading evaluation...</div>;
-    if (error) return <div>Error loading evaluation</div>;
 
     const styles = {
         header: {
@@ -67,19 +66,18 @@ export default function PrintPage() {
         }
     };
 
+    if (isLoading) return <Loader className='h-8 w-8 animate-spin' />;
+
     return (
         <div ref={componentRef}>
             <div style={styles.header}>
                 <h1>Republic of the Philippines</h1>
                 <h2>NORTH EASTERN MINDANAO STATE UNIVERSITY</h2>
                 <h3>LIANGA CAMPUS</h3>
-                <h4>COLLEGE OF INFORMATION TECHNOLOGY EDUCATION</h4>
             </div>
             <div style={{ marginBottom: '20px' }}>
-                <p><strong>Faculty ID:</strong> {data[0].facultyId}</p>
                 <p><strong>Faculty Name:</strong> {data[0].facultyName}</p>
                 <p><strong>Department:</strong> {data[0].facultyDepartment}</p>
-                <p><strong>Subject:</strong> {data[0].subject}</p>
                 <p><strong>Evaluation Summary</strong></p>
             </div>
             <table style={{

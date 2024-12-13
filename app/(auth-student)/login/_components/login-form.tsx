@@ -26,7 +26,7 @@ export default function LoginForm() {
     const form = useForm({
         resolver: zodResolver(loginStudentSchema),
         defaultValues: {
-            'username': '',
+            'studentId': '',
             'password': ''
         }
     })
@@ -37,14 +37,13 @@ export default function LoginForm() {
         mutate(payload, {
             onSuccess: () => {
                 form.reset({
-                    'username': payload.username,
+                    'studentId': payload.studentId,
                     'password': '********************************************'
                 })
 
                 router.push('/dashboard')
             },
             onError: (error) => {
-                // Add error handling 
                 form.setError('root', {
                     type: 'manual',
                     message: error.message || 'Login failed. Please try again.'
@@ -104,7 +103,7 @@ export default function LoginForm() {
                                     <div className="grid gap-2">
                                         <FormField
                                             control={form.control}
-                                            name={'username'}
+                                            name={'studentId'}
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel className="flex items-center">

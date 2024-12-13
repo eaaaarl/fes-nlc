@@ -13,11 +13,12 @@ import { Check, Loader2, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'next/navigation'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useParams, useRouter } from 'next/navigation'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useEditStudent } from './mutation'
 
-export function StudentEditSkeleton() {
+function StudentEditSkeleton() {
     return (
         <PageWithBackButton
             backButtonHref='/admin/students'
@@ -69,20 +70,32 @@ interface StudentEditPayload {
 
 type Subject = { id: string, subjectName: string };
 
-export default function page() {
+export default function StudentPage() {
+    const router = useRouter()
     const params = useParams<{ id: string }>()
     const id = params.id;
     const [currentSelectedSubject, setCurrentSelectedSubject] = useState('');
     const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([])
 
-    const form = useForm({
-        resolver: zodResolver(studentEditSchema),
-        defaultValues: {
-            fullName: "",
-            department: "",
-            subjectIds: []
+
+
+    const queryClient = useQueryClient()
+
+    useEffect(() => {
+        if (id) {
+            queryClient.prefetchQuery({
+                queryKey: ['student', 'edit', id],
+                queryFn: async (): Promise<StudentEditPayload> => {
+                    const response = await fetch(`/api/admin/student/${id}/edit`)
+                    if (!response.ok) {
+                        const err = await response.json()
+                        throw new Error(err.error || 'Failed to get the student')
+                    }
+                    return response.json()
+                }
+            })
         }
-    })
+    }, [id, queryClient])
 
     const { data: getStudent, isLoading: getStudentLoading } = useQuery({
         queryKey: ['student', 'edit', id],
@@ -97,16 +110,26 @@ export default function page() {
         enabled: !!id
     })
 
+    const form = useForm({
+        resolver: zodResolver(studentEditSchema),
+        defaultValues: {
+            fullName: '',
+            department: "CITE",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            subjectIds: [] as any
+        }
+    })
+
     useEffect(() => {
         if (getStudent) {
 
             form.reset({
                 fullName: getStudent.fullName,
-                department: getStudent?.department || form.getValues('department') || 'CITE',
+                department: getStudent.department,
             });
 
             const existingSubjects = getStudent?.subjects?.map(subject => ({
-                id: subject.id.toString(),
+                id: subject.id,
                 subjectName: subject.subjectName
             })) || [];
             setSelectedSubjects(existingSubjects);
@@ -145,23 +168,33 @@ export default function page() {
 
     useEffect(() => {
         if (selectedSubjects) {
-            form.setValue('subjectIds', selectedSubjects.map(s => s.id.toString()), {
+            form.setValue('subjectIds', selectedSubjects.map(s => String(s.id)), {
                 shouldValidate: true
             });
         }
     }, [selectedSubjects, form]);
 
-
-
+    const { mutate, status } = useEditStudent()
     const handleSubmit = (payload: studentEditValues) => {
-        console.log(payload)
+        mutate({ id, payload }, {
+            onSuccess: () => {
+                form.reset({
+                    fullName: '',
+                    department: "",
+                    subjectIds: []
+                })
+                setCurrentSelectedSubject('')
+                setSelectedSubjects([])
+
+                router.push('/admin/students')
+            }
+        })
     }
 
     if (getStudentLoading || isLoading) {
         return <StudentEditSkeleton />
     }
 
-    console.log(form.getValues('department'))
     return (
         <PageWithBackButton
             backButtonHref='/admin/students'

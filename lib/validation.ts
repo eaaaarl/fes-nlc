@@ -17,7 +17,31 @@ export const facultySchema = z.object({
 
 export type facultyValues = z.infer<typeof facultySchema>;
 
+export const facultyEditSchema = z.object({
+  facultyName: z
+    .string()
+    .min(3, "Name must be at least 3 characters long")
+    .max(100, "Name cannot exceed 100 characters")
+    .regex(
+      /^[a-zA-Z\s'-]+$/,
+      "Name can only contain letters, spaces, hyphens, and apostrophes"
+    ),
+  department: z.string().min(1, "Department is required"),
+  subjectIds: z
+    .array(z.string())
+    .min(1, "At least one subject must be selected"),
+});
+
+export type facultyEditValues = z.infer<typeof facultyEditSchema>;
+
 export const studentSchema = z.object({
+  studentId: z
+    .string()
+    .min(1, "Required")
+    .regex(/^\d{4}-\d{5}$/, {
+      message:
+        "Student ID must follow the format YYYY-NNNNN (e.g., 2024-01133).",
+    }),
   fullName: z
     .string()
     .min(3, "Name must be at least 3 characters long")
@@ -62,17 +86,16 @@ export const evaluationSchema = z.object({
 export type evaluationValues = z.infer<typeof evaluationSchema>;
 
 export const loginStudentSchema = z.object({
-  username: z
+  studentId: z
     .string()
-    .min(3, "Username must be at least 3 characters long")
-    .max(100, "Username cannot exceed 100 characters")
-    .regex(
-      /^[a-zA-Z\s'-]+$/,
-      "username can only contain letters, spaces, hyphens, and apostrophes"
-    ),
+    .min(1, "Required")
+    .regex(/^\d{4}-\d{5}$/, {
+      message:
+        "Student ID must follow the format YYYY-NNNNN (e.g., 2024-01133).",
+    }),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters long")
+    .min(4, "Password must be at least 4 characters long")
     .max(128, "Password cannot exceed 128 characters"),
 });
 
@@ -94,3 +117,43 @@ export const loginAdminSchema = z.object({
 });
 
 export type loginAdminValues = z.infer<typeof loginAdminSchema>;
+
+export const ChangePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(4, "Current Password must be at least 4 characters"),
+    newPassword: z
+      .string()
+      .min(4, "New Password must be at least 4 characters"),
+    confirmPassword: z
+      .string()
+      .min(4, "Confirm Password must be at least 4 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Password do not match",
+  });
+
+export type ChangePasswordValues = z.infer<typeof ChangePasswordSchema>;
+
+export const ChangePasswordAdminSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(8, "Current Password must be at least 8 characters"),
+    newPassword: z
+      .string()
+      .min(8, "New Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Password do not match",
+  });
+
+export type ChangePasswordAdminValues = z.infer<
+  typeof ChangePasswordAdminSchema
+>;

@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useQuery } from "@tanstack/react-query"
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import { Check, Loader2, X } from 'lucide-react'
+import { Check, Loader, Loader2, X } from 'lucide-react'
 import { facultySchema } from '@/lib/validation'
 import { useCreate } from './mutation'
 
@@ -27,7 +27,8 @@ export default function AddFacultyForm() {
         defaultValues: {
             facultyName: '',
             department: '',
-            subjectIds: []
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            subjectIds: [] as any
         }
     });
 
@@ -108,23 +109,26 @@ export default function AddFacultyForm() {
                                                                 <SelectValue placeholder='Select Subjects' />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                <ScrollArea className="h-72">
-                                                                    <SelectGroup>
-                                                                        {subjects?.map((subject) => (
-                                                                            <SelectItem
-                                                                                key={subject.id}
-                                                                                value={subject.id}
-                                                                            >
-                                                                                <div className="flex items-center justify-between w-full">
-                                                                                    <span>{subject.subjectName}</span>
-                                                                                    {selectedSubjects.some(s => s.id === subject.id) && (
-                                                                                        <Check className="h-4 w-4 text-green-500 ml-2" />
-                                                                                    )}
-                                                                                </div>
-                                                                            </SelectItem>
-                                                                        ))}
-                                                                    </SelectGroup>
-                                                                </ScrollArea>
+                                                                {isLoading ? (<Loader className='h-4 w-4 animate-spin' />) : (
+                                                                    <ScrollArea className="h-72">
+                                                                        <SelectGroup>
+                                                                            {subjects?.map((subject) => (
+                                                                                <SelectItem
+                                                                                    key={subject.id}
+                                                                                    value={subject.id}
+                                                                                >
+                                                                                    <div className="flex items-center justify-between w-full">
+                                                                                        <span>{subject.subjectName}</span>
+                                                                                        {selectedSubjects.some(s => s.id === subject.id) && (
+                                                                                            <Check className="h-4 w-4 text-green-500 ml-2" />
+                                                                                        )}
+                                                                                    </div>
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectGroup>
+                                                                    </ScrollArea>
+                                                                )}
+
                                                             </SelectContent>
                                                         </Select>
                                                         <div className="mt-2 flex flex-wrap gap-2">
@@ -210,7 +214,7 @@ export default function AddFacultyForm() {
                         </Form>
                     </CardContent>
                 </Card>
-            </div>
-        </PageWithBackButton>
+            </div >
+        </PageWithBackButton >
     )
 }

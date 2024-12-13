@@ -22,7 +22,7 @@ export default function AdminLoginForm() {
     const { mutate, status: isLoading } = useAdminLogin()
 
     const onSubmit = (payload: loginAdminValues) => {
-        console.log(payload)
+
         mutate(payload, {
             onSuccess: () => {
                 form.reset({

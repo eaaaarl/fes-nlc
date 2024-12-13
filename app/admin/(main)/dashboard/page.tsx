@@ -7,12 +7,11 @@ import {
     GraduationCap,
     BookOpen,
     CheckCircle,
-    Calendar,
     Circle
 } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
+import DashboardMetricsChart from './_components/DashboardMetricCharts'
 
-// Updated interface to include active users
 interface DashboardStats {
     totalUsers: number;
     totalFaculty: number;
@@ -20,10 +19,9 @@ interface DashboardStats {
     totalSubjects: number;
     totalEvaluated: number;
     currentSemester: string;
-    activeUsers: number; // New field for active/online users
+    activeUsers: number;
 }
 
-// Updated STAT_CONFIG to include active users
 const STAT_CONFIG = {
     totalUsers: {
         icon: Users,
@@ -60,14 +58,13 @@ const STAT_CONFIG = {
         iconBg: "bg-red-100",
         textColor: "text-red-600"
     },
-    currentSemester: {
-        icon: Calendar,
-        title: "Current Semester",
-        bgColor: "bg-indigo-50",
-        iconBg: "bg-indigo-100",
-        textColor: "text-indigo-600"
-    },
-    // New configuration for active users
+    /*  currentSemester: {
+         icon: Calendar,
+         title: "Current Semester",
+         bgColor: "bg-indigo-50",
+         iconBg: "bg-indigo-100",
+         textColor: "text-indigo-600"
+     }, */
     activeUsers: {
         icon: Circle,
         title: "Active Users",
@@ -104,7 +101,6 @@ export default function DashboardPages() {
             </div>
         </div>
     )
-
     const StatCard = ({
         icon: Icon,
         title,
@@ -112,6 +108,7 @@ export default function DashboardPages() {
         bgColor,
         iconBg,
         textColor
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }: any) => (
         <div className={`${bgColor} rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
             <div className="p-4">
@@ -154,11 +151,16 @@ export default function DashboardPages() {
                     <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Dashboard Overview</h1>
                     <p className="text-gray-500">Quick insights into your academic ecosystem</p>
                 </header>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                     {dashboardStats.map((stat, index) => (
                         <StatCard key={index} {...stat} />
                     ))}
                 </div>
+                {stats && (
+                    <div className="grid grid-cols-1">
+                        <DashboardMetricsChart stats={stats} />
+                    </div>
+                )}
             </div>
         </div>
     )

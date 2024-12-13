@@ -18,7 +18,7 @@ import { redirect } from "next/navigation"
 
 export default async function MainLayout({ children }: { children: ReactNode }) {
 
-    const { user, session } = await getCurrentSession();
+    const { user } = await getCurrentSession();
     if (!user) {
         redirect("/not-found");
     }

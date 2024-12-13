@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client"
 
 import { useState } from "react"
@@ -15,32 +17,17 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
-import { Loader2, BookOpen, ShieldCheck, KeyRound, User, GraduationCap } from "lucide-react"
+import { Loader2, BookOpen, KeyRound, User, GraduationCap } from "lucide-react"
 
 export default function FacultyLoginForm() {
-    const router = useRouter()
+    const _router = useRouter()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [isLoading, _setIsLoading] = useState(false)
+    const [error, _setError] = useState("")
 
-    const handleLogin = (e) => {
-        e.preventDefault()
-        setIsLoading(true)
-        setError("")
+    const handleLogin = () => {
 
-        // Simulated login logic
-        setTimeout(() => {
-            if (username === "faculty" && password === "faculty123") {
-                // Successful login
-                setIsLoading(false)
-                router.push('/faculty/dashboard')
-            } else {
-                // Failed login
-                setIsLoading(false)
-                setError("Invalid faculty credentials. Please try again.")
-            }
-        }, 1500)
     }
 
     return (
@@ -48,7 +35,7 @@ export default function FacultyLoginForm() {
             <Card className="flex w-full max-w-5xl shadow-2xl border-2 border-emerald-700 overflow-hidden">
                 <div className="relative hidden w-1/2 md:block">
                     <Image
-                        src="/nemsu-login.jpg"  // Use a distinct background image for faculty
+                        src="/nemsu-login.jpg"
                         alt="NEMSU Faculty Login"
                         layout="fill"
                         objectFit="cover"

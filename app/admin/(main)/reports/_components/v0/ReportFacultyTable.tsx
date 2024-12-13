@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Printer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { ReportFacultyTableSkeleton } from '../v1/ReportFacultyTableSkeleton';
 
 export default function ReportFacultyTable() {
     const router = useRouter()
@@ -27,7 +28,7 @@ export default function ReportFacultyTable() {
         router.push(url)
     };
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return <ReportFacultyTableSkeleton />
 
     return (
         <Table>

@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Edit, MoreHorizontal, Trash2 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useRouter } from 'next/navigation'
 
 
 export default function FacultyTableData() {
+    const router = useRouter()
     const { data, isLoading } = useQuery({
         queryKey: ['create', 'faculty'],
         queryFn: async (): Promise<{
@@ -35,7 +37,6 @@ export default function FacultyTableData() {
             <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
             <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
             <TableCell><Skeleton className="h-4 w-[40px]" /></TableCell>
-            <TableCell><Skeleton className="h-4 w-[40px]" /></TableCell>
             <TableCell>
                 <Skeleton className="h-8 w-8 rounded-md" />
             </TableCell>
@@ -45,20 +46,15 @@ export default function FacultyTableData() {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>ID</TableHead>
                     <TableHead>Faculty Name</TableHead>
                     <TableHead>Department</TableHead>
                     <TableHead>Subject</TableHead>
-                    <TableHead>PlainText Password</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {isLoading ? loadingSkeletons : data?.map((f) => (
                     <TableRow key={f.id}>
-                        <TableCell>
-                            {f.id}
-                        </TableCell>
                         <TableCell>
                             {f.fullName}
                         </TableCell>
@@ -68,7 +64,6 @@ export default function FacultyTableData() {
                         <TableCell>
                             {f.subjects.length > 0 ? f.subjects.length : '0'}
                         </TableCell>
-                        <TableCell>{f.plaintTextPassword?.plainTextPassword}</TableCell>
                         <TableCell>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -83,6 +78,7 @@ export default function FacultyTableData() {
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuItem
                                         className="cursor-pointer"
+                                        onClick={() => router.push(`/admin/faculty/${f.id}/edit`)}
                                     >
                                         <Edit className="mr-2 h-4 w-4" />
                                         Edit

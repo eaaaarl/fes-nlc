@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import React from 'react'
-import ReportFacultyTable from './_components/ReportFacultyTable'
+import ReportFacultyTable from './_components/v0/ReportFacultyTable'
 
 export default function ReportPages() {
     return (

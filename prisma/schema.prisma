@@ -34,36 +34,25 @@ model Session {
 }
 
 model Faculty {
-  id                  Int               @id @default(autoincrement())
-  fullName            String
-  department          String
-  plainTextPasswordId String
-  plaintTextPassword  plainTextPassword @relation(fields: [plainTextPasswordId], references: [id], onDelete: Cascade)
-  subjects            Subject[]         @relation("FacultySubjects")
-  userId              String
-  user                User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Evaluation          Evaluation[]
+  id         String @id @default(uuid())
+  fullName   String
+  department String
+
+  subjects   Subject[]    @relation("FacultySubjects")
+  userId     String
+  user       User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Evaluation Evaluation[]
 }
 
 model Student {
-  id                  Int               @id @default(autoincrement())
-  fullName            String
-  department          String
-  plainTextPasswordId String
-  plaintTextPassword  plainTextPassword @relation(fields: [plainTextPasswordId], references: [id], onDelete: Cascade)
-
-  subjects Subject[] @relation("StudentSubjects")
-
-  userId            String?
-  user              User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String              @id @default(uuid())
+  studentId         String              @unique
+  fullName          String
+  department        String
+  subjects          Subject[]           @relation("StudentSubjects")
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   SubjectEvaluation SubjectEvaluation[]
-}
-
-model plainTextPassword {
-  id                String    @id @default(uuid())
-  plainTextPassword String?
-  Faculty           Faculty[]
-  Student           Student[]
 }
 
 model SubjectEvaluation {
@@ -72,7 +61,7 @@ model SubjectEvaluation {
   isEvaluated Boolean  @default(false)
   evaluatedAt DateTime @default(now())
 
-  studentId Int
+  studentId String
   student   Student  @relation(fields: [studentId], references: [id])
   Subject   Subject? @relation(fields: [subjectId], references: [id])
   subjectId Int?
@@ -111,7 +100,7 @@ model RatingScale {
 
 model Evaluation {
   id            Int     @id @default(autoincrement())
-  facultyId     Int
+  facultyId     String
   faculty       Faculty @relation(fields: [facultyId], references: [id])
   subject       String
   classSchedule String

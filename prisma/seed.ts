@@ -16,7 +16,7 @@ async function main() {
     },
   });
 
-  /* const categoryData = [
+  const categoryData = [
     {
       categoryName: "COMMITMENT",
       questions: [
@@ -112,8 +112,8 @@ async function main() {
         `Rating scale "${scale.description}" already exists. Skipping.`
       );
     }
-  } */
-  /* await prisma.subject.createMany({
+  }
+  await prisma.subject.createMany({
     data: [
       {
         subjectName: "Automata Theory and Formal Languages",
@@ -159,7 +159,7 @@ async function main() {
         subjectName: "Arts Appreciation",
       },
     ],
-  }); */
+  });
 }
 
 main()

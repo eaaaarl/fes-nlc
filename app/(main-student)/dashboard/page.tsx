@@ -16,72 +16,12 @@ import {
     CardHeader,
     CardTitle
 } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { BookOpen, CheckCircle, Calendar } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-
-export function DashboardSkeleton() {
-    return (
-        <SidebarInset className="flex flex-col">
-            <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
-                <SidebarTrigger className="-ml-1">
-                    <Skeleton className="w-8 h-8 rounded-full" />
-                </SidebarTrigger>
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
-                            <Skeleton className="h-4 w-20" />
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <Skeleton className="h-4 w-16" />
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-            </header>
-
-            <div className="space-y-4 gap-4 p-4">
-                <Skeleton className="h-8 w-64 mb-2" />
-                <Skeleton className="h-5 w-48" />
-            </div>
-
-            <div className='flex flex-1 flex-col gap-4 p-4 pt-4'>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {[1, 2, 3].map((_, index) => (
-                        <Card
-                            key={index}
-                            className="animate-pulse hover:shadow-lg transition-shadow"
-                        >
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-6 w-6 rounded-full" />
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                <Skeleton className="h-7 w-24" />
-                                <Skeleton className="h-4 w-36" />
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            </div>
+import { DashboardSkeleton } from './DashboardSkeleton'
 
 
-            {/*    <div className="p-4 space-y-4">
-                <div className="flex justify-between items-center">
-                    <Skeleton className="h-6 w-40" />
-                    <Skeleton className="h-4 w-24" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[1, 2, 3].map((_, index) => (
-                        <Skeleton key={index} className="h-24 w-full" />
-                    ))}
-                </div>
-            </div> */}
-        </SidebarInset>
-    )
-}
 
 export default function DashboardPage() {
     const { data, isLoading, error } = useQuery({

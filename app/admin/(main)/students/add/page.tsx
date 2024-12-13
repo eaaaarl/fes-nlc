@@ -11,7 +11,7 @@ import { Select } from '@radix-ui/react-select'
 import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQuery } from '@tanstack/react-query'
-import { Check, Loader2, X } from 'lucide-react'
+import { Check, Loader, Loader2, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -38,9 +38,11 @@ export default function AddStudentForm() {
     const form = useForm({
         resolver: zodResolver(studentSchema),
         defaultValues: {
+            studentId: '',
             fullName: '',
             department: '',
-            subjectIds: []
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            subjectIds: [] as any
         }
     })
 
@@ -70,6 +72,7 @@ export default function AddStudentForm() {
     const { mutate, status } = useCreate();
 
     const handleSubmit = (payload: studentValues) => {
+        console.log(payload)
         mutate(payload, {
             onSuccess: () => {
                 form.reset({
@@ -111,23 +114,25 @@ export default function AddStudentForm() {
                                                                 <SelectValue placeholder='Select Subjects' />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                <ScrollArea className="h-72">
-                                                                    <SelectGroup>
-                                                                        {subjects?.map((subject) => (
-                                                                            <SelectItem
-                                                                                key={subject.id}
-                                                                                value={subject.id}
-                                                                            >
-                                                                                <div className="flex items-center justify-between w-full">
-                                                                                    <span>{subject.subjectName}</span>
-                                                                                    {selectedSubjects.some(s => s.id === subject.id) && (
-                                                                                        <Check className="h-4 w-4 text-green-500 ml-2" />
-                                                                                    )}
-                                                                                </div>
-                                                                            </SelectItem>
-                                                                        ))}
-                                                                    </SelectGroup>
-                                                                </ScrollArea>
+                                                                {isLoading ? (<Loader className='h-4 w-4 animate-spin' />) : (
+                                                                    <ScrollArea className="h-72">
+                                                                        <SelectGroup>
+                                                                            {subjects?.map((subject) => (
+                                                                                <SelectItem
+                                                                                    key={subject.id}
+                                                                                    value={subject.id}
+                                                                                >
+                                                                                    <div className="flex items-center justify-between w-full">
+                                                                                        <span>{subject.subjectName}</span>
+                                                                                        {selectedSubjects.some(s => s.id === subject.id) && (
+                                                                                            <Check className="h-4 w-4 text-green-500 ml-2" />
+                                                                                        )}
+                                                                                    </div>
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectGroup>
+                                                                    </ScrollArea>
+                                                                )}
                                                             </SelectContent>
                                                         </Select>
                                                         <div className="mt-2 flex flex-wrap gap-2">
@@ -146,6 +151,24 @@ export default function AddStudentForm() {
                                                             ))}
                                                         </div>
                                                     </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
+                                    <FormField
+                                        control={form.control}
+                                        name='studentId'
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Student Id</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder='2024-00000'
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
