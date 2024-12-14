@@ -52,7 +52,6 @@ export function NavUser({
     const { mutate } = useLogoutStudent()
 
     const handleOpenChangePassword = () => {
-        console.log(true)
         setOpenChangePassword(true);
     }
     return (

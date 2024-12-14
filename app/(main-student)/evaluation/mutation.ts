@@ -1,13 +1,20 @@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { submitEvaluation } from "./action";
+import { evaluationValues } from "@/lib/validation";
 
 export function useSubmitEvaluation() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: submitEvaluation,
+    mutationFn: ({
+      studentId,
+      payload,
+    }: {
+      studentId: string;
+      payload: evaluationValues;
+    }) => submitEvaluation(studentId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) =>

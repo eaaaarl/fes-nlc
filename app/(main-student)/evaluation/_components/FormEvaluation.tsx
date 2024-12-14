@@ -53,6 +53,18 @@ export default function FormEvaluation() {
     const [selectedSubjectId, setSelectedSubjectId] = useState('');
     const [formKey, setFormKey] = useState(0);
 
+    const { data: Student, isLoading: StudentLoading } = useQuery({
+        queryKey: ['student', 'current-info'],
+        queryFn: async () => {
+            const response = await fetch(`/api/student/info`)
+            if (!response.ok) {
+                const err = await response.json()
+                throw new Error(err.error || "(q): Failed to fetch current info")
+            }
+            return response.json()
+        }
+    })
+
     const { data, isLoading } = useQuery({
         queryKey: ['evaluation', 'question'],
         queryFn: async (): Promise<{ question: Question[], ratingScale: RatingScale[] }> => {
@@ -127,8 +139,7 @@ export default function FormEvaluation() {
 
     const confirmSubmission = () => {
         const payload = form.getValues()
-        console.log(payload)
-        submitEval(payload, {
+        submitEval({ studentId: Student?.info?.id as string, payload }, {
             onSuccess: () => {
                 setFormKey((prevKey) => prevKey + 1);
 
@@ -149,12 +160,12 @@ export default function FormEvaluation() {
         })
     }
 
-    if (isLoading) {
+    if (isLoading || StudentLoading) {
         return <EvaluationFormSkeleton />
     }
 
     if (selectedSubjectStudent?.subjects?.length === 0) {
-        return (<Card className="max-w-md mx-auto mt-8 text-center shadow-md border hidden">
+        return (<Card className="max-w-md mx-auto mt-8 text-center shadow-md border">
             <CardHeader>
                 <div className="flex justify-center">
                     <CheckCircleIcon className="h-12 w-12 text-green-500" />

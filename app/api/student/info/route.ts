@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
         userId: user.id,
       },
       select: {
+        id: true,
         fullName: true,
         department: true,
         user: {

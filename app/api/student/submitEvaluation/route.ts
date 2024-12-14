@@ -1,30 +1,15 @@
 import prisma from "@/lib/db";
-import { getCurrentSession } from "@/lib/session";
 import { evaluationSchema } from "@/lib/validation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { user } = await getCurrentSession();
+    const studentId = req.nextUrl.searchParams.get("studentId") || "";
 
-    if (!user) {
+    if (!studentId) {
       return NextResponse.json(
         {
-          error: "Unauthorized",
-        },
-        { status: 401 }
-      );
-    }
-    const existingStudent = await prisma.student.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
-
-    if (!existingStudent) {
-      return NextResponse.json(
-        {
-          error: "Student is not found",
+          error: "studentId is not found.",
         },
         { status: 404 }
       );
@@ -68,7 +53,7 @@ export async function POST(req: NextRequest) {
         where: {
           uniqueSubjectNameStudentId: {
             subjectName: subject,
-            studentId: existingStudent.id,
+            studentId: studentId,
           },
         },
 
@@ -79,7 +64,7 @@ export async function POST(req: NextRequest) {
 
         create: {
           subjectName: subject,
-          studentId: existingStudent.id,
+          studentId: studentId,
           subjectId: payload.subjectId,
           isEvaluated: true,
         },
