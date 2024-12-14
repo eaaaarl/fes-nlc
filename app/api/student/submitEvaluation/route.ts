@@ -1,11 +1,20 @@
 import prisma from "@/lib/db";
+import { getCurrentSession } from "@/lib/session";
 import { evaluationSchema } from "@/lib/validation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const { user } = await getCurrentSession();
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
+    }
     const studentId = req.nextUrl.searchParams.get("studentId") || "";
-
     if (!studentId) {
       return NextResponse.json(
         {
@@ -14,23 +23,25 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-
     const payload = await req.json();
     const { facultyId, subject, classSchedule, comments, response } =
       evaluationSchema.parse(payload);
 
-    const result = await prisma.$transaction(async (prisma) => {
-      const evaluation = await prisma.evaluation.create({
-        data: {
-          facultyId,
-          subject,
-          classSchedule,
-          responseId: "0",
-          comments: comments || undefined,
-        },
-      });
+    // First transaction: Create the main evaluation
+    const evaluation = await prisma.evaluation.create({
+      data: {
+        facultyId,
+        subject,
+        classSchedule,
+        responseId: "0",
+        comments: comments || undefined,
+      },
+    });
 
-      const responses = await Promise.all(
+    // Second transaction: Create responses and update evaluation
+    const responses = await prisma.$transaction(async (prisma) => {
+      // Create responses
+      const createdResponses = await Promise.all(
         Object.entries(response).map(([questionId, rating]) =>
           prisma.response.create({
             data: {
@@ -42,13 +53,15 @@ export async function POST(req: NextRequest) {
         )
       );
 
+      // Update evaluation with first response ID
       await prisma.evaluation.update({
         where: { id: evaluation.id },
         data: {
-          responseId: responses[0].id.toString(),
+          responseId: createdResponses[0].id.toString(),
         },
       });
 
+      // Upsert subject evaluation
       await prisma.subjectEvaluation.upsert({
         where: {
           uniqueSubjectNameStudentId: {
@@ -56,12 +69,10 @@ export async function POST(req: NextRequest) {
             studentId: studentId,
           },
         },
-
         update: {
           isEvaluated: true,
           evaluatedAt: new Date(),
         },
-
         create: {
           subjectName: subject,
           studentId: studentId,
@@ -70,10 +81,10 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      return { evaluation, responses };
+      return createdResponses;
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({ evaluation, responses });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -220,8 +220,8 @@ export default function FormEvaluation() {
                                                             {
                                                                 selectedSubjectStudentLoading ? (
                                                                     <>
-                                                                        <div className="flex justify-center items-center h-full">
-                                                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                                                        <div className="flex justify-center items-center h-full p-4">
+                                                                            <Loader2 className="h-7 w-7 animate-spin" />
                                                                         </div>
                                                                     </>
                                                                 ) :
