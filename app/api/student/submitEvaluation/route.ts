@@ -1,9 +1,20 @@
 import prisma from "@/lib/db";
+import { getCurrentSession } from "@/lib/session";
 import { evaluationSchema } from "@/lib/validation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const { user } = await getCurrentSession();
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
+    }
+
     const studentId = req.nextUrl.searchParams.get("studentId") || "";
 
     if (!studentId) {
