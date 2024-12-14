@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { evaluationSchema, evaluationValues } from '@/lib/validation'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, CheckCircleIcon, Loader2 } from 'lucide-react'
+import { CheckCircle2, CheckCircleIcon, Loader, Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Textarea } from '@/components/ui/textarea'
@@ -33,7 +33,9 @@ type RatingScale = {
     description: string;
 };
 
-export default function FormEvaluation() {
+
+export default function FormMobileEvaluation() {
+
     const { toast } = useToast()
     const form = useForm({
         resolver: zodResolver(evaluationSchema),
@@ -154,7 +156,7 @@ export default function FormEvaluation() {
     }
 
     if (selectedSubjectStudent?.subjects?.length === 0) {
-        return (<Card className="max-w-md mx-auto mt-8 text-center shadow-md border hidden">
+        return (<Card className="max-w-md mx-auto mt-8 text-center shadow-md border">
             <CardHeader>
                 <div className="flex justify-center">
                     <CheckCircleIcon className="h-12 w-12 text-green-500" />
@@ -172,16 +174,18 @@ export default function FormEvaluation() {
     }
 
     return (
-        <div className='space-y-6 gap-4 p-4' key={formKey}>
+        <div className="w-full max-w-md mx-auto p-4 space-y-6" key={formKey}>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)}>
-                    <Card>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                    <Card className="w-full">
                         <CardHeader>
-                            <CardTitle>Evaluation Form</CardTitle>
-                            <CardDescription>Evaluate your faculty and subject taught</CardDescription>
+                            <CardTitle className="text-xl">Evaluation Form</CardTitle>
+                            <CardDescription className="text-sm">
+                                Evaluate your faculty and subject taught
+                            </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className='gap-4 space-y-4'>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
                                 <FormField
                                     control={form.control}
                                     name='subject'
@@ -224,6 +228,9 @@ export default function FormEvaluation() {
                                         </FormItem>
                                     )}
                                 />
+                            </div>
+
+                            <div className="space-y-2">
                                 <FormField
                                     control={form.control}
                                     name='facultyId'
@@ -273,6 +280,8 @@ export default function FormEvaluation() {
                                         </FormItem>
                                     )}
                                 />
+                            </div>
+                            <div className='space-y-2'>
                                 <FormField
                                     control={form.control}
                                     name='classSchedule'
@@ -304,68 +313,57 @@ export default function FormEvaluation() {
                         </CardContent>
                     </Card>
 
-
                     {Object.entries(groupQuestion || {}).map(([categoryName, questions], index) => (
-                        <div key={categoryName} className='space-y-6 gap-4 my-4'>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>{String.fromCharCode(65 + index)}. {categoryName}</CardTitle>
-                                </CardHeader>
-                            </Card>
-                            <Card>
-                                <CardContent>
-                                    <div className='space-y-4 mx-auto mt-2 p-4'>
-                                        {questions.map((q, questionIndex) => (
-                                            <div key={q.id} className='space-y-2 p-2'>
-                                                <p className='font-semibold text-lg'>{questionIndex + 1}. {q.questionName}</p>
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`response`}
-                                                    render={() => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <RadioGroup
-                                                                    value={responses[q.id]?.toString()}
-                                                                    onValueChange={(value) =>
-                                                                        setResponses((prev) => ({
-                                                                            ...prev,
-                                                                            [q.id]: parseInt(value),
-                                                                        }))
-                                                                    }
-                                                                    className="flex flex-wrap gap-4 justify-between"
-                                                                >
-                                                                    {q.ratingScale.map((scale) => (
-                                                                        <div key={scale.rating} className="flex items-center space-x-1">
-                                                                            <RadioGroupItem
-                                                                                value={scale.rating.toString()}
-                                                                                id={`${q.id}-${scale.rating}`}
-                                                                            />
-                                                                            <Label htmlFor={`${q.id}-${scale.rating}`}>
-                                                                                {scale.description}
-                                                                            </Label>
-                                                                        </div>
-                                                                    ))}
-                                                                </RadioGroup>
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        ))}
-
+                        <Card key={categoryName} className="w-full">
+                            <CardHeader>
+                                <CardTitle className="text-lg">
+                                    {String.fromCharCode(65 + index)}. {categoryName}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {questions.map((q, questionIndex) => (
+                                    <div key={q.id} className="space-y-3 mb-6">
+                                        <p className="text-base font-semibold">
+                                            {questionIndex + 1}. {q.questionName}
+                                        </p>
+                                        <RadioGroup
+                                            className="space-y-2"
+                                            onValueChange={(value) =>
+                                                setResponses(prev => ({
+                                                    ...prev,
+                                                    [q.id]: parseInt(value)
+                                                }))
+                                            }
+                                        >
+                                            {q.ratingScale.map((scale) => (
+                                                <div
+                                                    key={scale.rating}
+                                                    className="flex items-center space-x-2"
+                                                >
+                                                    <RadioGroupItem
+                                                        value={scale.rating.toString()}
+                                                        id={`${q.id}-${scale.rating}`}
+                                                    />
+                                                    <Label
+                                                        htmlFor={`${q.id}-${scale.rating}`}
+                                                        className="text-sm"
+                                                    >
+                                                        {scale.description}
+                                                    </Label>
+                                                </div>
+                                            ))}
+                                        </RadioGroup>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                                ))}
+                            </CardContent>
+                        </Card>
                     ))}
 
-
-                    <Card className='mt-4'>
+                    <Card>
                         <CardHeader>
-                            <CardTitle>Additional Comments</CardTitle>
-                            <CardDescription>
-                                Please provide any additional feedback or suggestions (Optional)
+                            <CardTitle className="text-lg">Additional Comments</CardTitle>
+                            <CardDescription className="text-sm">
+                                Please provide any additional feedback (Optional)
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -389,14 +387,13 @@ export default function FormEvaluation() {
                     </Card>
 
                     <AlertDialog open={isSubmissionConfirmed} onOpenChange={setIsSubmissionConfirmed}>
-                        <div className='mt-6 flex items-center space-x-4'>
-                            <Button
-                                type='submit'
-                                disabled={!form.formState.isValid}
-                            >
-                                Review and Submit
-                            </Button>
-                        </div>
+                        <Button
+                            type='submit'
+                            disabled={!form.formState.isValid}
+                            className='w-full'
+                        >
+                            Review and Submit
+                        </Button>
 
                         <AlertDialogContent>
                             <AlertDialogHeader>
@@ -441,7 +438,7 @@ export default function FormEvaluation() {
                                     onClick={confirmSubmission}
                                 >
                                     {submitEvalLoading === 'pending'
-                                        ? (<Loader2 className='h-5 w-5 animate-spin' />)
+                                        ? (<Loader className='h-5 w-5 animate-spin' />)
                                         : 'Confirm Submission'
                                     }
                                 </Button>
@@ -450,6 +447,6 @@ export default function FormEvaluation() {
                     </AlertDialog>
                 </form>
             </Form>
-        </div >
+        </div>
     )
 }

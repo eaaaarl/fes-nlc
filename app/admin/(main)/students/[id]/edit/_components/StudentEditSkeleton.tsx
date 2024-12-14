@@ -1,12 +1,12 @@
 import React from 'react'
-import { PageWithBackButton } from '../../../_components/PageWithBackButton'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { PageWithBackButton } from '@/app/admin/(main)/_components/PageWithBackButton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export function FacultyEditSkeleton() {
+export default function StudentEditSkeleton() {
     return (
         <SidebarInset>
             <header className="flex h-16 shrink-0 items-center gap-2">
@@ -17,12 +17,12 @@ export function FacultyEditSkeleton() {
                         <BreadcrumbList>
                             <BreadcrumbItem className="hidden md:block">
                                 <BreadcrumbLink href="#">
-                                    FACULTY
+                                    STUDENTS
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="hidden md:block" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage>EDIT FACULTY FORM</BreadcrumbPage>
+                                <BreadcrumbPage>EDIT STUDENTS FORM</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -31,8 +31,8 @@ export function FacultyEditSkeleton() {
 
             <div className='p-4'>
                 <PageWithBackButton
-                    backButtonHref='/admin/faculty'
-                    pageTitle='Edit Faculty'
+                    backButtonHref='/admin/students'
+                    pageTitle='Edit Students'
                 >
                     <div className='space-y-6 max-w-2xl mx-auto'>
                         <Card>
@@ -67,6 +67,5 @@ export function FacultyEditSkeleton() {
                 </PageWithBackButton>
             </div>
         </SidebarInset>
-
     )
 }

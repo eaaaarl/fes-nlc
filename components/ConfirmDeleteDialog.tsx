@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
-import { Loader, Trash2 } from "lucide-react"; 
+import { Loader, Trash2 } from "lucide-react";
 
 interface ConfirmDeleteDialog {
   isOpen: boolean;
@@ -50,7 +50,8 @@ export default function ConfirmDeleteDialog({
             {isLoading ?
               (<Loader className="h-4 w-4 animate-spin" />) :
               <>
-                <Trash2 className="h-4 w-4 mr-2" /> Delete
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
               </>
             }
           </AlertDialogAction>

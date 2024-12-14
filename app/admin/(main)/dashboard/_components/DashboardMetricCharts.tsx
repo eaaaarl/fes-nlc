@@ -14,7 +14,6 @@ interface DashboardChartProps {
 }
 
 export const DashboardMetricsChart: React.FC<DashboardChartProps> = ({ stats }) => {
-    // Transform stats into chart-friendly format
     const chartData = [
         {
             name: 'Users',

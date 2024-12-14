@@ -1,8 +1,10 @@
 import React from 'react'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import FormEvaluation from './_components/FormEvaluation'
+import { ClipboardPen } from 'lucide-react'
+import FormMobileEvaluation from './_components/FormMobileEvaluation'
 
 export default function EvaluationPage() {
     return (
@@ -12,18 +14,26 @@ export default function EvaluationPage() {
                 <Separator orientation="vertical" className="mr-2 h-4" />
                 <Breadcrumb>
                     <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="#">Evaluation</BreadcrumbLink>
+                        {/*<BreadcrumbItem className="hidden md:block">
+                        <BreadcrumbLink href="#">Evaluation</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbSeparator className="hidden md:block" />*/}
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Overview</BreadcrumbPage>
+                            <BreadcrumbPage className='flex items-center gap-2'>
+                                <ClipboardPen />
+                                <span>EVALUATION</span>
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
             </header>
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                <FormEvaluation />
+                <div className='hidden max-lg:hidden lg:block'>
+                    <FormEvaluation />
+                </div>
+                <div className='lg:hidden'>
+                    <FormMobileEvaluation />
+                </div>
             </div>
         </SidebarInset>
     )

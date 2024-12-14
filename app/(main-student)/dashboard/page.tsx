@@ -4,10 +4,8 @@ import React from 'react'
 import {
     Breadcrumb,
     BreadcrumbItem,
-    BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
-    BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -16,7 +14,7 @@ import {
     CardHeader,
     CardTitle
 } from '@/components/ui/card'
-import { BookOpen, CheckCircle, Calendar } from 'lucide-react'
+import { BookOpen, CheckCircle, Calendar, LayoutGrid } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { DashboardSkeleton } from './DashboardSkeleton'
@@ -84,12 +82,15 @@ export default function DashboardPage() {
                 <Separator orientation="vertical" className="mr-2 h-4" />
                 <Breadcrumb>
                     <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
+                        {/* <BreadcrumbItem className="hidden md:block">
                             <BreadcrumbLink href="#">Evaluation</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbSeparator className="hidden md:block" /> */}
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Overview</BreadcrumbPage>
+                            <BreadcrumbPage className='flex items-center gap-2'>
+                                <LayoutGrid />
+                                <span>DASHBOARD</span>
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -116,7 +117,6 @@ export default function DashboardPage() {
                     ))}
                 </div>
             </div>
-
         </SidebarInset>
     )
 }

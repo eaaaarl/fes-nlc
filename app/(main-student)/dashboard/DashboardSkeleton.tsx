@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -14,10 +14,10 @@ export function DashboardSkeleton() {
                 <Separator orientation="vertical" className="mr-2 h-4" />
                 <Breadcrumb>
                     <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
+                        {/*  <BreadcrumbItem className="hidden md:block">
                             <Skeleton className="h-4 w-20" />
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbSeparator className="hidden md:block" /> */}
                         <BreadcrumbItem>
                             <Skeleton className="h-4 w-16" />
                         </BreadcrumbItem>
