@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const { facultyId, subject, classSchedule, comments, response } =
       evaluationSchema.parse(payload);
 
-    // First transaction: Create the main evaluation
+    // Create evaluation
     const evaluation = await prisma.evaluation.create({
       data: {
         facultyId,
@@ -38,50 +38,45 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Second transaction: Create responses and update evaluation
-    const responses = await prisma.$transaction(async (prisma) => {
-      // Create responses
-      const createdResponses = await Promise.all(
-        Object.entries(response).map(([questionId, rating]) =>
-          prisma.response.create({
-            data: {
-              evaluationId: evaluation.id,
-              questionId: parseInt(questionId),
-              rating: rating,
-            },
-          })
-        )
-      );
-
-      // Update evaluation with first response ID
-      await prisma.evaluation.update({
-        where: { id: evaluation.id },
-        data: {
-          responseId: createdResponses[0].id.toString(),
-        },
-      });
-
-      // Upsert subject evaluation
-      await prisma.subjectEvaluation.upsert({
-        where: {
-          uniqueSubjectNameStudentId: {
-            subjectName: subject,
-            studentId: studentId,
+    // Create responses
+    const responses = await Promise.all(
+      Object.entries(response).map(([questionId, rating]) =>
+        prisma.response.create({
+          data: {
+            evaluationId: evaluation.id,
+            questionId: parseInt(questionId),
+            rating: rating,
           },
-        },
-        update: {
-          isEvaluated: true,
-          evaluatedAt: new Date(),
-        },
-        create: {
+        })
+      )
+    );
+
+    // Update evaluation with first response ID
+    await prisma.evaluation.update({
+      where: { id: evaluation.id },
+      data: {
+        responseId: responses[0].id.toString(),
+      },
+    });
+
+    // Upsert subject evaluation
+    await prisma.subjectEvaluation.upsert({
+      where: {
+        uniqueSubjectNameStudentId: {
           subjectName: subject,
           studentId: studentId,
-          subjectId: payload.subjectId,
-          isEvaluated: true,
         },
-      });
-
-      return createdResponses;
+      },
+      update: {
+        isEvaluated: true,
+        evaluatedAt: new Date(),
+      },
+      create: {
+        subjectName: subject,
+        studentId: studentId,
+        subjectId: payload.subjectId,
+        isEvaluated: true,
+      },
     });
 
     return NextResponse.json({ evaluation, responses });
