@@ -18,10 +18,9 @@ export async function generateMetadata({
         if (!response.ok) {
             throw new Error('Failed to fetch faculty data');
         }
-
         const data = await response.json();
         return {
-            title: `Evaluation - ${data[0]?.facultyName || 'Faculty'}`,
+            title: `Faculty - ${data[0]?.facultyName || 'Faculty'} - 2024-2025`,
         };
     } catch (error) {
         console.error('Metadata Fetch Error:', error);
