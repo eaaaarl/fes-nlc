@@ -27,9 +27,8 @@ export default function ReportFacultyTable() {
         const url = `/print/${facultyId}/result`
         router.push(url)
     };
-
     if (isLoading) return <ReportFacultyTableSkeleton />
-
+    console.log(data);
     return (
         <Table>
             <TableHeader>

@@ -17,6 +17,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "FESNLC",
+  description: "FESNLC - Faculty Evaluation System for NEMSU LC. Access faculty evaluation results and insights to foster academic growth and excellence at NEMSU LC.",
 };
 
 export default function RootLayout({
