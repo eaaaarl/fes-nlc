@@ -105,7 +105,7 @@ export function NavUser({
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => mutate(undefined, {
                                 onSuccess: () => {
-                                    router.push('/login');
+                                    router.push('/');
                                 },
                             })}>
                                 <LogOut />

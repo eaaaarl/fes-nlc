@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -19,7 +18,7 @@ import { loginStudentSchema, loginStudentValues } from "@/lib/validation"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useLoginStudent } from "../mutation"
 import { useRouter } from "next/navigation"
-import { Loader2, ShieldCheck, KeyRound, User } from "lucide-react"
+import { Loader2, KeyRound, User } from "lucide-react"
 
 export default function LoginForm() {
     const router = useRouter()
@@ -64,16 +63,8 @@ export default function LoginForm() {
                         className="brightness-75"
                     />
                     <div className="absolute inset-0 flex flex-col">
-                        {/*  <div className="flex justify-center p-6">
-
-                            <Image
-                                src="/nemsu-logo.png"
-                                alt="NEMSU Lianga Campus Logo"
-                                width={100}
-                                height={100}
-                                className="object-contain"
-                            />
-                        </div> */}
+                        <div className="flex justify-center p-6">
+                        </div>
 
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-40 p-8 text-white">
                             <h2 className="text-3xl font-bold mb-2">Faculty Evaluation System</h2>
@@ -84,12 +75,15 @@ export default function LoginForm() {
                 <div className="w-full p-8 md:w-1/2 flex flex-col justify-center">
                     <CardHeader className="text-center">
                         <div className="flex justify-center mb-4">
-                            <ShieldCheck className="h-12 w-12 text-primary" />
+                            {/*  <Image
+                                src="/nemsu-logo.png"
+                                alt="NEMSU Lianga Campus Logo"
+                                width={120}
+                                height={120}
+                                className="object-contain"
+                            /> */}
                         </div>
-                        <CardTitle className="text-2xl mb-2">Secure Login</CardTitle>
-                        <CardDescription>
-                            Enter your credentials to access the Faculty Evaluation System
-                        </CardDescription>
+                        <CardTitle className="text-3xl mb-2">STUDENT LOGIN</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Form {...form}>
@@ -108,12 +102,12 @@ export default function LoginForm() {
                                                 <FormItem>
                                                     <FormLabel className="flex items-center">
                                                         <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                                                        Username
+                                                        Student ID No.
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             {...field}
-                                                            placeholder="Enter your username"
+
                                                         />
                                                     </FormControl>
                                                     <FormMessage />
@@ -143,7 +137,6 @@ export default function LoginForm() {
                                                         <Input
                                                             type="password"
                                                             {...field}
-                                                            placeholder="Enter your password"
                                                         />
                                                     </FormControl>
                                                     <FormMessage />
