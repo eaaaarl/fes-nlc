@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
+
     const studentId = req.nextUrl.searchParams.get("studentId") || "";
+
     if (!studentId) {
       return NextResponse.json(
         {
@@ -27,7 +29,6 @@ export async function POST(req: NextRequest) {
     const { facultyId, subject, classSchedule, comments, response } =
       evaluationSchema.parse(payload);
 
-    // Create evaluation
     const evaluation = await prisma.evaluation.create({
       data: {
         facultyId,
@@ -38,7 +39,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create responses
     const responses = await Promise.all(
       Object.entries(response).map(([questionId, rating]) =>
         prisma.response.create({
@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
       )
     );
 
-    // Update evaluation with first response ID
     await prisma.evaluation.update({
       where: { id: evaluation.id },
       data: {
@@ -59,7 +58,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Upsert subject evaluation
     await prisma.subjectEvaluation.upsert({
       where: {
         uniqueSubjectNameStudentId: {

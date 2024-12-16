@@ -1,5 +1,3 @@
-// File: .next/types/app/api/admin/evaluation-result/[facultyId]/result/route.ts
-
 import prisma from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -42,9 +40,9 @@ export async function GET(
     const facultyResults = faculties.map((faculty) => {
       const categoryWeights: Record<string, number> = {
         COMMITMENT: 0.2,
-        KNOWLEDGE_OF_SUBJECT: 0.2,
-        TEACHING_FOR_INDEPENDENT_LEARNING: 0.3,
-        MANAGEMENT_OF_LEARNING: 0.3,
+        "KNOWLEDGE OF SUBJECT": 0.2,
+        "TEACHING FOR INDEPENDENT LEARNING": 0.3,
+        "MANAGEMENT OF LEARNING": 0.3,
       };
 
       const categoryData: Record<string, CategoryData> = {};

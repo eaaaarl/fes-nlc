@@ -1,4 +1,5 @@
-'use client';
+'use client'
+
 import React, { useRef, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -48,7 +49,6 @@ export default function PrintPage() {
         };
     }, [router]);
 
-
     const styles = {
         header: {
             textAlign: 'center' as const,
@@ -67,6 +67,11 @@ export default function PrintPage() {
     };
 
     if (isLoading) return <Loader className='h-8 w-8 animate-spin' />;
+
+    // Ensure data exists and is an array before accessing
+    if (!data || data.length === 0) {
+        return <div>No evaluation data available</div>;
+    }
 
     return (
         <div ref={componentRef}>
@@ -98,9 +103,9 @@ export default function PrintPage() {
                 <tbody>
                     <tr>
                         <td style={styles.cell}>{data[0].breakdown.COMMITMENT.weightedAverage || 0}</td>
-                        <td style={styles.cell}>{data[0].breakdown.KNOWLEDGE_OF_SUBJECT.weightedAverage || 0}</td>
-                        <td style={styles.cell}>{data[0].breakdown.TEACHING_FOR_INDEPENDENT_LEARNING.weightedAverage || 0}</td>
-                        <td style={styles.cell}>{data[0].breakdown.MANAGEMENT_OF_LEARNING.weightedAverage || 0}</td>
+                        <td style={styles.cell}>{data[0].breakdown['KNOWLEDGE OF SUBJECT'].weightedAverage || 0}</td>
+                        <td style={styles.cell}>{data[0].breakdown['MANAGEMENT OF LEARNING'].weightedAverage || 0}</td>
+                        <td style={styles.cell}>{data[0].breakdown['TEACHING FOR INDEPENDENT LEARNING'].weightedAverage || 0}</td>
                         <td style={styles.cell}>{data[0].totalScore || 0}</td>
                     </tr>
                 </tbody>
