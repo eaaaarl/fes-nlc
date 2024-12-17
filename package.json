@@ -1,7 +1,8 @@
 {
-  "name": "fesnlc",
-  "version": "0.1.0",
+ "name": "fesnlc",
+  "version": "0.1.0-alpha",
   "private": true,
+  "author": "Earl Dominic Ado dev.earl00@gmail.com",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
